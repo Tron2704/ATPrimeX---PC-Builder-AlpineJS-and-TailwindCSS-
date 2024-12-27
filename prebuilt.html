@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AT PrimeX - Pre Built</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</head>
+
+<body class="m-0 p-0 flex flex-col min-h-screen overflow-x-hidden">
+    <div class="flex flex-grow">
+        <!-- Fixed Navigation -->
+        <nav x-data="{ open: false }"
+            class="w-full md:w-[20vw] bg-gradient-to-b from-gray-800 to-gray-900 text-white p-4 flex flex-col justify-between fixed top-0 left-0 h-auto md:h-full z-50 shadow-2xl">
+            <div class="flex justify-between items-center md:block">
+                <!-- Logo Section -->
+                <div class="mb-4 md:mb-8">
+                    <h1
+                        class="text-2xl md:text-4xl font-bold tracking-wide text-red-400 hover:text-white transition-colors duration-300 cursor-pointer">
+                        AT PrimeX
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-400 mt-2 tracking-widest">BUILDING POWERHOUSES SINCE 2021</p>
+                </div>
+
+                <!-- Mobile Menu and Cart Icon -->
+                <div class="flex items-center gap-4 md:hidden">
+                    <a href="cart.html"
+                        class="relative text-2xl hover:text-red-400 transition-colors duration-200">🛒</a>
+                    <button @click="open = !open" class="text-2xl">☰</button>
+                </div>
+            </div>
+
+            <!-- Navigation Links Section -->
+            <div :class="{ 'block': open, 'hidden': !open }" class="md:block space-y-4 text-lg">
+                <a href="home.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🏠
+                    Home</a>
+                <a href="index.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🛠️
+                    Custom PC</a>
+                <div x-data="{ open: false }" class="relative">
+                    <div @click="open = !open"
+                        class="flex items-center justify-between cursor-pointer hover:text-red-400 transition-colors duration-300">
+                        💻 Pre-Built PC
+                        <span :class="{ 'rotate-45': open }"
+                            class="transform transition-transform duration-300">+</span>
+                    </div>
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-2"
+                        class="pl-4 mt-2 space-y-2 text-gray-300 bg-gray-700 rounded-md shadow-lg overflow-hidden">
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🎮 GAMING PC</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">💼 PRODUCTIVITY</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🖥️ WORKSTATIONS</a></li>
+                    </ul>
+                </div>
+                <a href="peripherals.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🖱️
+                    Peripherals</a>
+            </div>
+
+            <!-- Cart Icon (Hide on Small Devices) -->
+            <div class="hidden md:flex flex-col gap-2">
+                <div class="p-4 flex justify-center text-2xl">
+                    <a href="cart.html" class="relative hover:text-red-400 transition-colors duration-200">🛒 Cart</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content (Scrollable) -->
+        <main class="w-full p-4 md:p-8 md:ml-[20vw] mt-[120px] md:mt-0 overflow-y-auto flex-1" x-data="productData()">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <template x-for="(product, index) in products" :key="index">
+                    <div class="flex flex-col items-start space-y-6 p-6">
+                        <!-- Product Image with hover effect -->
+                        <div
+                            class="w-full bg-gray-300 flex items-center justify-center relative group rounded-lg shadow-lg overflow-hidden">
+                            <img :src="product.image" :alt="product.label"
+                                class="w-full h-full object-contain transition-all duration-700 ease-in-out group-hover:opacity-60" loading="lazy">
+                            <div
+                                class="absolute inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-md flex items-center justify-center opacity-0 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-105">
+                                <div class="text-black space-y-4 px-6 py-4 max-h-full overflow-y-auto">
+                                    <!-- Product Specs -->
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">CHASSIS:</span>
+                                        <span x-text="product.chassis"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">PROCESSOR:</span>
+                                        <span x-text="product.processor"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">MOTHERBOARD:</span>
+                                        <span x-text="product.motherboard"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">GRAPHICS CARD:</span>
+                                        <span x-text="product.graphicsCard"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">POWER SUPPLY:</span>
+                                        <span x-text="product.powerSupply"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">PRIMARY STORAGE:</span>
+                                        <span x-text="product.primaryStorage"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">SECONDARY STORAGE:</span>
+                                        <span x-text="product.secondaryStorage"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">RAM:</span>
+                                        <span x-text="product.ram"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">COOLER:</span>
+                                        <span x-text="product.cooler"></span>
+                                    </p>
+                                    <p class="text-xs flex">
+                                        <span class="font-semibold mr-2">OPERATING SYSTEM:</span>
+                                        <span x-text="product.operatingSystem"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="flex justify-between items-center w-full mt-6">
+                            <div class="text-left space-y-2">
+                                <p class="text-lg font-semibold text-gray-900" x-text="product.label"></p>
+                                <p class="text-xl font-bold text-gray-800">₹<span
+                                        x-text="formatPrice(product.price)"></span></p>
+                            </div>
+                            <button
+                                class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productData', () => ({
+                products: [
+                    {
+                        label: 'PLASMA',
+                        price: 58990,
+                        image: 'assets/images/antec-c8-black.jpg',
+                        chassis: 'Antec C8 (E-ATX) Full Tower Cabinet Black',
+                        motherboard: 'GIGABYTE 8160M DS3H AX WITH WIFI AND BLUETOOTH',
+                        graphicsCard: 'INTEGRATED GRAPHICS (UPTO 2 DISPLAY PORTS)',
+                        secondaryStorage: 'NOT REQUIRED',
+                        powerSupply: 'COOLER MASTER MWE 650 WATTS 80 PLUS BRONZE',
+                        processor: 'Core i3 13100 (Upto-4.50GHz, Cores-4, Threads-8)',
+                        ram: '16GB 6000 MHZ DDR5 (CORSAIR/G.SKILL)',
+                        primaryStorage: '500 GB CRUCIAL pa PLUS GEN 4 UPTO 4700 MB/s NVMe MI',
+                        cooler: 'DEEPCOOL AK400 ZERO DARK 120MM AIR COOLER',
+                        operatingSystem: 'Windows 11 Professional Trial'
+                    },
+                    {
+                        label: 'EQURA',
+                        price: 63990,
+                        image: 'assets/images/ant-220-air-white.jpg',
+                        chassis: 'Ant Esports 220 Air White',
+                        motherboard: 'GIGABYTE B160M DS3H AX DDR5 WITH WIFI AND BLUETOOTH',
+                        graphicsCard: 'INTEGRATED GRAPHICS',
+                        secondaryStorage: 'NOT REQUIRED',
+                        powerSupply: 'COOLER MASTER 650 WATTS 80 PLUS BRONZE',
+                        processor: 'Core i3 13400 (Upto 4.60GHz, Cores 10, Threads 16)',
+                        ram: '16GB 6000 MHZ DDR5 (CORSAIR/G.SKILL)',
+                        primaryStorage: '500 GB CRUCIAL P3 PLUS GEN 4 UPTO 4700 NVMe MI',
+                        cooler: 'DEEPCOOL AK400 120MM Air Cooler',
+                        operatingSystem: 'Windows 11 Professional Trial'
+                    }
+                ],
+                formatPrice(price) {
+                    return new Intl.NumberFormat('en-IN').format(price);
+                }
+            }));
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AT PrimeX - Home</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <script src="assets/script/script.js"></script>
+
+</head>
+
+<body class="m-0 p-0 flex flex-col min-h-screen overflow-x-hidden" x-data="priceUpdate()">
+  <div class="flex flex-grow">
+    <!-- Fixed Navigation -->
+    <nav x-data="{ open: false }"
+      class="w-full md:w-[20vw] bg-gradient-to-b from-gray-800 to-gray-900 text-white p-4 flex flex-col justify-between fixed top-0 left-0 h-auto md:h-full z-50 shadow-2xl">
+      <div class="flex justify-between items-center md:block">
+        <!-- Logo Section -->
+        <div class="mb-4 md:mb-8">
+          <h1
+            class="text-2xl md:text-4xl font-bold tracking-wide text-red-400 hover:text-white transition-colors duration-300 cursor-pointer">
+            AT PrimeX
+          </h1>
+          <p class="text-xs md:text-sm text-gray-400 mt-2 tracking-widest">BUILDING POWERHOUSES SINCE 2021</p>
+        </div>
+
+        <!-- Mobile Menu and Cart Icon -->
+        <div class="flex items-center gap-4 md:hidden">
+          <a href="cart.html" class="relative text-2xl hover:text-red-400 transition-colors duration-200">🛒</a>
+          <button @click="open = !open" class="text-2xl">☰</button>
+        </div>
+      </div>
+
+      <!-- Navigation Links Section -->
+      <div :class="{ 'block': open, 'hidden': !open }" class="md:block space-y-4 text-lg">
+        <a href="home.html"
+          class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🏠
+          Home</a>
+        <a href="index.html"
+          class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🛠️
+          Custom PC</a>
+        <div x-data="{ open: false }" class="relative">
+          <div @click="open = !open"
+            class="flex items-center justify-between cursor-pointer hover:text-red-400 transition-colors duration-300">
+            💻 Pre-Built PC
+            <span :class="{ 'rotate-45': open }" class="transform transition-transform duration-300">+</span>
+          </div>
+          <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200 transform"
+            x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
+            class="pl-4 mt-2 space-y-2 text-gray-300 bg-gray-700 rounded-md shadow-lg overflow-hidden">
+            <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🎮 GAMING PC</a></li>
+            <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">💼 PRODUCTIVITY</a></li>
+            <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🖥️ WORKSTATIONS</a></li>
+          </ul>
+        </div>
+        <a href="peripherals.html"
+          class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🖱️
+          Peripherals</a>
+      </div>
+
+      <!-- Cart Icon (Hide on Small Devices) -->
+      <div class="hidden md:flex flex-col gap-2">
+        <div class="p-4 flex justify-center text-2xl">
+          <a href="cart.html" class="relative hover:text-red-400 transition-colors duration-200">🛒 Cart</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content (Scrollable) -->
+    <main class="w-full p-4 md:p-8 md:ml-[20vw] mt-[120px] md:mt-0 overflow-y-auto flex-1">
+      <!-- Headinh Section -->
+      <section class="mb-12">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-12 rounded-lg shadow-lg">
+          <h2 class="text-5xl font-bold mb-4">Welcome to <span class="text-red-400">AT PrimeX</span></h2>
+          <p class="text-lg mb-6">Your one-stop destination for building the perfect PC, whether custom, pre-built, or
+            accessorized with top-notch peripherals.</p>
+          <a href="custom.html"
+            class="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Build
+            Your PC Now</a>
+        </div>
+      </section>
+
+      <!-- Products Tiles -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div
+          class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+          <img src="assets/images/custompc.png" alt="Custom PC" class="w-full object-contain">
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2">Custom PCs</h3>
+            <p class="text-gray-600 mb-4">Tailor your PC with handpicked components to match your needs.</p>
+            <a href="index.html" class="text-red-500 hover:underline">Explore Custom PCs ➔</a>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+          <img src="assets/images/prebuiltpc.png" alt="Pre-Built PC" class="w-full object-contain">
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2">Pre-Built PCs</h3>
+            <p class="text-gray-600 mb-4">Ready-to-go PCs designed for gaming, productivity, and more.</p>
+            <a href="prebuilt.html" class="text-red-500 hover:underline">View Pre-Built PCs ➔</a>
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+          <img src="assets/images/peripherals.png" alt="Peripherals" class="w-full object-contain">
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-2">Peripherals</h3>
+            <p class="text-gray-600 mb-4">Enhance your setup with quality accessories like mice, keyboards, and more.
+            </p>
+            <a href="peripherals.html" class="text-red-500 hover:underline">Shop Peripherals ➔</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- What We Provide Section -->
+      <section class="mt-16 mb-12">
+        <h2 class="text-4xl font-bold mb-6 text-gray-800">What We Provide</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors">
+            <h3 class="text-xl font-bold mb-2">Expert Assembly</h3>
+            <p class="text-gray-600">Professionally assembled PCs with precision and care.</p>
+          </div>
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors">
+            <h3 class="text-xl font-bold mb-2">Quality Assurance</h3>
+            <p class="text-gray-600">Thorough testing to ensure optimal performance.</p>
+          </div>
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors">
+            <h3 class="text-xl font-bold mb-2">Customer Support</h3>
+            <p class="text-gray-600">24/7 support to assist you with any queries.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Customer Reviews Section -->
+      <section class="mb-16">
+        <h2 class="text-4xl font-bold mb-6 text-gray-800">Customer Reviews</h2>
+        <div class="space-y-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-700 italic">"Amazing service! My custom gaming PC was delivered on time and works
+              flawlessly."</p>
+            <p class="text-gray-800 font-bold mt-2">- Rajesh K.</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-700 italic">"Top-notch quality and great customer support. Highly recommended!"</p>
+            <p class="text-gray-800 font-bold mt-2">- Sneha P.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Shop Now -->
+      <div class="text-center mb-10">
+        <a href="index.html"
+          class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg text-xl font-semibold transition-transform transform hover:scale-105">Start
+          Shopping Now</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

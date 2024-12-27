@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AT PrimeX - Pre Built</title>
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</head>
+
+<body class="m-0 p-0 flex flex-col min-h-screen overflow-x-hidden">
+    <div class="flex flex-grow">
+        <!-- Fixed Navigation -->
+        <nav x-data="{ open: false }"
+            class="w-full md:w-[20vw] bg-gradient-to-b from-gray-800 to-gray-900 text-white p-4 flex flex-col justify-between fixed top-0 left-0 h-auto md:h-full z-50 shadow-2xl">
+            <div class="flex justify-between items-center md:block">
+                <!-- Logo Section -->
+                <div class="mb-4 md:mb-8">
+                    <h1
+                        class="text-2xl md:text-4xl font-bold tracking-wide text-red-400 hover:text-white transition-colors duration-300 cursor-pointer">
+                        AT PrimeX
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-400 mt-2 tracking-widest">BUILDING POWERHOUSES SINCE 2021</p>
+                </div>
+
+                <!-- Mobile Menu and Cart Icon -->
+                <div class="flex items-center gap-4 md:hidden">
+                    <a href="cart.html"
+                        class="relative text-2xl hover:text-red-400 transition-colors duration-200">🛒</a>
+                    <button @click="open = !open" class="text-2xl">☰</button>
+                </div>
+            </div>
+
+            <!-- Navigation Links Section -->
+            <div :class="{ 'block': open, 'hidden': !open }" class="md:block space-y-4 text-lg">
+                <a href="home.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🏠
+                    Home</a>
+                <a href="index.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🛠️
+                    Custom PC</a>
+                <div x-data="{ open: false }" class="relative">
+                    <div @click="open = !open"
+                        class="flex items-center justify-between cursor-pointer hover:text-red-400 transition-colors duration-300">
+                        💻 Pre-Built PC
+                        <span :class="{ 'rotate-45': open }"
+                            class="transform transition-transform duration-300">+</span>
+                    </div>
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-2"
+                        class="pl-4 mt-2 space-y-2 text-gray-300 bg-gray-700 rounded-md shadow-lg overflow-hidden">
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🎮 GAMING PC</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">💼 PRODUCTIVITY</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🖥️ WORKSTATIONS</a></li>
+                    </ul>
+                </div>
+                <a href="peripherals.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🖱️
+                    Peripherals</a>
+            </div>
+
+            <!-- Cart Icon (Hidden on Small Devices) -->
+            <div class="hidden md:flex flex-col gap-2">
+                <div class="p-4 flex justify-center text-2xl">
+                    <a href="cart.html" class="relative hover:text-red-400 transition-colors duration-200">🛒 Cart</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content (Scrollable) -->
+        <main class="w-full p-4 md:p-8 md:ml-[20vw] mt-[120px] md:mt-0 overflow-y-auto flex-1" x-data="productData()">
+            <div class="container mx-auto">
+                <!-- Header Section -->
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">Shop Our Computer Peripherals</h2>
+                    <p class="text-lg text-gray-600 mt-2">High-quality peripherals to elevate your PC experience.</p>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 gap-8">
+                    <!-- Loop over products -->
+                    <template x-for="product in products" :key="product.id">
+                        <!-- Product Card -->
+                        <div
+                            class="product-card bg-white rounded-lg shadow-lg overflow-hidden flex max-h-[400px]">
+                            <!-- Image Section (20%) -->
+                            <div class="p-2 w-full h-[200px]">
+                                <img :src="product.image" :alt="product.name" class="w-full h-full object-contain">
+                            </div>
+
+                            <!-- Middle Content Section (60%) -->
+                            <div class="w-full p-4 flex flex-col gap-8 flex-grow">
+                                <!-- First Section: Product Name on Left and Price on Right -->
+                                <div class="flex justify-between items-center">
+                                    <h3 class="text-xl font-semibold text-gray-800" x-text="product.name"></h3>
+                                    <span class="text-lg font-semibold text-gray-900" x-text="product.price"></span>
+                                </div>
+
+                                <!-- Second Section: Product Description Below -->
+                                <p class="text-sm text-gray-600 mt-2" x-text="product.description"></p>
+                            </div>
+
+                            <!-- Cart Button Section (20%) -->
+                            <div class="w-full flex justify-center items-center p-4">
+                                <button
+                                    class="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-500 transition-colors duration-300">Add
+                                    to Cart</button>
+                            </div>
+                        </div>
+
+                    </template>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        function productData() {
+            return {
+                products: [
+                    {
+                        id: 1,
+                        name: "Gaming Mouse",
+                        description: "Precision gaming mouse with RGB lighting.",
+                        price: "₹49.99",
+                        image: "assets/images/gaming-mouse.jpg"
+                    },
+                    {
+                        id: 2,
+                        name: "Mechanical Keyboard",
+                        description: "Durable mechanical keyboard with customizable RGB.",
+                        price: "₹89.99",
+                        image: "assets/images/mechanical-keyboard.jpg"
+                    },
+                    {
+                        id: 3,
+                        name: "Wireless Headphones",
+                        description: "Noise-cancelling headphones for an immersive experience.",
+                        price: "₹129.99",
+                        image: "assets/images/wireless-headphone.jpg"
+                    },
+                    {
+                        id: 4,
+                        name: "4K Webcam",
+                        description: "High-definition webcam for crisp video calls.",
+                        price: "₹79.99",
+                        image: "assets/images/4k.jpg"
+                    }
+                    // Add more products here if needed
+                ]
+            };
+        }
+
+    </script>
+
+</body>
+
+</html>
