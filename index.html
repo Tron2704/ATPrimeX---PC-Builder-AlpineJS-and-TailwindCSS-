@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AT PrimeX</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script src="assets/script/script.js"></script>
+</head>
+
+<body class="m-0 p-0 flex flex-col min-h-screen overflow-x-hidden" x-data="priceUpdate()">
+    <div class="flex flex-grow">
+        <nav x-data="{ open: false }"
+            class="w-full md:w-[20vw] bg-gradient-to-b from-gray-800 to-gray-900 text-white p-4 flex flex-col justify-between fixed md:relative z-50 shadow-2xl">
+            <div class="flex justify-between items-center md:block">
+                <div class="mb-4 md:mb-8">
+                    <h1
+                        class="text-2xl md:text-4xl font-bold tracking-wide text-red-400 hover:text-white transition-colors duration-300 cursor-pointer">
+                        AT PrimeX
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-400 mt-2 tracking-widest">BUILDING POWERHOUSES SINCE 2021</p>
+                </div>
+
+                <!-- Mobile Menu and Cart Icon -->
+                <div class="flex items-center gap-4 md:hidden">
+                    <a href="cart.html"
+                        class="relative text-2xl hover:text-red-400 transition-colors duration-200">🛒</a>
+                    <button @click="open = !open" class="text-2xl">☰</button>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div :class="{ 'block': open, 'hidden': !open }" class="md:block space-y-4 text-lg">
+                <a href="home.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🏠
+                    Home</a>
+                <a href="index.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🛠️
+                    Custom PC</a>
+                <div x-data="{ open: false }" class="relative">
+                    <div @click="open = !open"
+                        class="flex items-center justify-between cursor-pointer hover:text-red-400 transition-colors duration-300">
+                        💻 Pre-Built PC
+                        <span :class="{ 'rotate-45': open }"
+                            class="transform transition-transform duration-300">+</span>
+                    </div>
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="opacity-0 translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-2"
+                        class="pl-4 mt-2 space-y-2 text-gray-300 bg-gray-700 rounded-md shadow-lg overflow-hidden">
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🎮 GAMING PC</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">💼 PRODUCTIVITY</a></li>
+                        <li><a href="prebuilt.html" class="block hover:text-red-400 py-1">🖥️ WORKSTATIONS</a></li>
+                    </ul>
+                </div>
+                <a href="peripherals.html"
+                    class="block hover:text-red-400 transition-transform transform hover:translate-x-2 duration-300">🖱️
+                    Peripherals</a>
+            </div>
+
+            <!-- Cart Icon (Hide on Small Devices) -->
+            <div class="hidden md:flex flex-col gap-2">
+                <div class="p-4 flex justify-center text-2xl">
+                    <a href="cart.html" class="relative hover:text-red-400 transition-colors duration-200">🛒 Cart</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="w-full p-4 flex flex-col md:flex-row mt-[90px] md:mt-2">
+            <!-- Left Image Container (40% width) -->
+            <div class="w-full md:w-[40%] h-[95vh] sm:w-[100%] p-2 flex justify-center items-center">
+                <div
+                    class="w-[80%] md:w-[25vw] h-[25vw] sm:w-[50%] h-[50%]  bg-gray-200 flex justify-center items-center relative overflow-hidden rounded-lg shadow-lg">
+                    <template x-if="selectedOption">
+                        <img :src="cabinetOptions[selectedCabinet].find(option => option.value === selectedOption).image"
+                            :alt="selectedOption" class="w-full h-full object-cover rounded-lg ">
+                    </template>
+
+                    <!-- Text when No Image is Selected -->
+                    <div x-show="!selectedOption" class="text-gray-500 italic mt-4 text-center">
+                        Please select a cabinet to see the image.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Dropdown Container (total height: 100vh, split into 3 sections) -->
+            <div class="w-full md:w-[60%] h-[95vh] flex flex-col">
+                <!-- Total Price Section (20% height, non-scrollable) -->
+                <div class="h-[15%] p-4 bg-white rounded-lg shadow-md mb-4 sm:h-[10%]">
+                    <h2 class="text-xl font-semibold text-gray-800">Total Price</h2>
+                    <div class="flex items-center space-x-3">
+                        <p class="text-2xl text-indigo-600 font-bold">Rs. <span
+                                x-text="totalPrice.toLocaleString()"></span></p>
+                        <span class="text-sm text-gray-500">+ GST (18%)</span>
+                    </div>
+                </div>
+
+                <!-- Dropdown Container (60% height, scrollable) -->
+                <div class="h-[75%] overflow-y-auto p-4 bg-white rounded shadow-md mb-4">
+                    <div class="flex flex-col w-full">
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- First dropdown -->
+                            <div class="flex flex-col w-full md:w-1/2">
+                                <label for="cabinet" class="mb-2">Cabinet</label>
+                                <select id="cabinet" x-model="selectedCabinet"
+                                    @change="selectedOption = ''; totalPrice = 0; updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="cabinet in cabinets" :key="cabinet.name">
+                                        <option :value="cabinet.name" x-text="cabinet.name"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Second dropdown (Options for Cabinet) -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedCabinet" x-transition>
+                                <label for="cabinetOptions" class="mb-2" x-text="`${selectedCabinet} Options`"></label>
+                                <select id="cabinetOptions" x-model="selectedOption" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in cabinetOptions[selectedCabinet]" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Processor Brand Dropdown -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedOption" x-transition>
+                                <label for="processor" class="mb-2">Processor</label>
+                                <select id="processor" x-model="selectedProcessorBrand" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="intel">Intel</option>
+                                    <option value="amd">AMD</option>
+                                </select>
+                            </div>
+
+                            <!-- Intel Processor Options -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedProcessorBrand === 'intel'"
+                                x-transition>
+                                <label for="intel-options" class="mb-2">Intel Options</label>
+                                <select id="intel-options" x-model="selectedProcessor" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in processorOptions.intel" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- AMD Processor Options -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedProcessorBrand === 'amd'"
+                                x-transition>
+                                <label for="amd-options" class="mb-2">AMD Options</label>
+                                <select id="amd-options" x-model="selectedProcessor" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in processorOptions.amd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Motherboard Brand Dropdown -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedProcessor" x-transition>
+                                <label for="motherboard" class="mb-2">Motherboard</label>
+                                <select id="motherboard" x-model="selectedMotherboardBrand" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="asus">ASUS</option>
+                                    <option value="gigabyte">Gigabyte</option>
+                                    <option value="msi">MSI</option>
+                                </select>
+                            </div>
+
+                            <!-- ASUS Motherboard Options for AMD -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'asus' && selectedProcessorBrand === 'amd'"
+                                x-transition>
+                                <label for="asus-options-amd" class="mb-2">ASUS Motherboard Options (AMD)</label>
+                                <select id="asus-options-amd" x-model="selectedMotherboard" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.asus.amd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Gigabyte Motherboard Options for AMD -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'gigabyte' && selectedProcessorBrand === 'amd'"
+                                x-transition>
+                                <label for="gigabyte-options-amd" class="mb-2">Gigabyte Motherboard Options
+                                    (AMD)</label>
+                                <select id="gigabyte-options-amd" x-model="selectedMotherboard" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.gigabyte.amd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- MSI Motherboard Options for AMD -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'msi' && selectedProcessorBrand === 'amd'"
+                                x-transition>
+                                <label for="msi-options-amd" class="mb-2">MSI Motherboard Options (AMD)</label>
+                                <select id="msi-options-amd" x-model="selectedMotherboard" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.msi.amd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- ASUS Motherboard Options for Intel -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'asus' && selectedProcessorBrand === 'intel'"
+                                x-transition>
+                                <label for="asus-options-intel" class="mb-2">ASUS Motherboard Options (Intel)</label>
+                                <select id="asus-options-intel" x-model="selectedMotherboard" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.asus.intel" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Gigabyte Motherboard Options for Intel -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'gigabyte' && selectedProcessorBrand === 'intel'"
+                                x-transition>
+                                <label for="gigabyte-options-intel" class="mb-2">Gigabyte Motherboard Options
+                                    (Intel)</label>
+                                <select id="gigabyte-options-intel" x-model="selectedMotherboard"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.gigabyte.intel" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- MSI Motherboard Options for Intel -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedMotherboardBrand === 'msi' && selectedProcessorBrand === 'intel'"
+                                x-transition>
+                                <label for="msi-options-intel" class="mb-2">MSI Motherboard Options (Intel)</label>
+                                <select id="msi-options-intel" x-model="selectedMotherboard" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in motherboardOptions.msi.intel" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Graphics Card Brand Dropdown -->
+                            <div class="flex flex-col sm:w-full"
+                                :class="(selectedGPUBrand === 'Own' || selectedGPUBrand === 'None') ? 'w-full' : 'md:w-1/2'"
+                                x-show="selectedMotherboard" x-transition>
+                                <label for="gpuBrand" class="mb-2">Graphics Card</label>
+                                <select id="gpuBrand" x-model="selectedGPUBrand" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="Asus">Asus</option>
+                                    <option value="Gigabyte">Gigabyte</option>
+                                    <option value="Galax">Galax</option>
+                                    <option value="MSI">MSI</option>
+                                    <option value="None">None</option>
+                                    <option value="Own">I have my own card</option>
+                                </select>
+                            </div>
+                        
+                            <!-- Asus GPU Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedGPUBrand === 'Asus'"
+                                x-transition>
+                                <label for="asusGPU" class="mb-2">Asus Options</label>
+                                <select id="asusGPU" name="asusGPU" x-model="selectedGPU" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in gpuOptions.asus" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        
+                            <!-- Gigabyte GPU Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedGPUBrand === 'Gigabyte'"
+                                x-transition>
+                                <label for="gigabyteGPU" class="mb-2">Gigabyte Options</label>
+                                <select id="gigabyteGPU" name="gigabyteGPU" x-model="selectedGPU" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in gpuOptions.gigabyte" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        
+                            <!-- Galax GPU Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedGPUBrand === 'Galax'"
+                                x-transition>
+                                <label for="galaxGPU" class="mb-2">Galax Options</label>
+                                <select id="galaxGPU" name="galaxGPU" x-model="selectedGPU" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in gpuOptions.galax" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        
+                            <!-- MSI GPU Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedGPUBrand === 'MSI'"
+                                x-transition>
+                                <label for="msiGPU" class="mb-2">MSI Options</label>
+                                <select id="msiGPU" name="msiGPU" x-model="selectedGPU" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in gpuOptions.msi" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- SMPS Brand Dropdown -->
+                            <div class="flex flex-col sm:w-full md:w-1/2"
+                                :class="selectedGPU || selectedGPUBrand === 'None' || selectedGPUBrand === 'Own' ? 'w-full' : 'w-1/2'"
+                                x-show="selectedGPU || selectedGPUBrand === 'None' || selectedGPUBrand === 'Own'"
+                                x-transition>
+                                <label for="smpsBrand" class="mb-2">SMPS Brand</label>
+                                <select id="smpsBrand" x-model="selectedSMPSBrand" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="Corsair">Corsair</option>
+                                    <option value="Gigabyte">Gigabyte</option>
+                                    <option value="MSI">MSI</option>
+                                </select>
+                            </div>
+
+                            <!-- Corsair SMPS Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedSMPSBrand === 'Corsair'"
+                                x-transition>
+                                <label for="corsairSMPS" class="mb-2">Corsair Options</label>
+                                <select id="corsairSMPS" name="corsairSMPS" x-model="selectedSMPS"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in smpsOptions.corsair" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Gigabyte SMPS Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedSMPSBrand === 'Gigabyte'"
+                                x-transition>
+                                <label for="gigabyteSMPS" class="mb-2">Gigabyte Options</label>
+                                <select id="gigabyteSMPS" name="gigabyteSMPS" x-model="selectedSMPS"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in smpsOptions.gigabyte" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- MSI SMPS Options -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedSMPSBrand === 'MSI'"
+                                x-transition>
+                                <label for="msiSMPS" class="mb-2">MSI Options</label>
+                                <select id="msiSMPS" name="msiSMPS" x-model="selectedSMPS" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in smpsOptions.msi" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- First dropdown: Storage Brands -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedSMPS" x-transition>
+                                <label class="mb-2">Storage Type</label>
+                                <div class="flex space-x-4">
+                                    <label>
+                                        <input type="checkbox" value="Primary" x-model="selectedStorageType"
+                                            @change="updatePrice()" />
+                                        Primary Storage
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" value="Secondary" x-model="selectedStorageType"
+                                            @change="updatePrice()" />
+                                        Secondary Storage
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Primary Storage Dropdown -->
+                            <div class="flex flex-col sm:w-full md:w-1/2"
+                                x-show="selectedStorageType.includes('Primary')" x-transition>
+                                <label for="primaryStorage" class="mb-2">Primary Storage Type</label>
+                                <select id="primaryStorage" name="primaryStorage" x-model="selectedPrimaryStorageType"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="SSD">SSD</option>
+                                </select>
+                            </div>
+
+                            <!-- HDD Options (Primary) -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedPrimaryStorageType === 'HDD'"
+                                x-transition>
+                                <label for="hddStorage" class="mb-2">HDD Options</label>
+                                <select id="hddStorage" name="hddStorage" x-model="selectedPrimaryHddStorage"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in storageOptions.hdd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- SSD Options (Primary) -->
+                            <div class="flex flex-col sm:w-full md:w-1/2" x-show="selectedPrimaryStorageType === 'SSD'"
+                                x-transition>
+                                <label for="ssdStorage" class="mb-2">SSD Options</label>
+                                <select id="ssdStorage" name="ssdStorage" x-model="selectedPrimarySsdStorage"
+                                    @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in storageOptions.ssd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Secondary Storage Dropdown -->
+                            <div class="flex flex-col sm:w-full md:w-1/2"
+                                x-show="selectedStorageType.includes('Secondary')" x-transition>
+                                <label for="secondaryStorage" class="mb-2">Secondary Storage Type</label>
+                                <select id="secondaryStorage" name="secondaryStorage"
+                                    x-model="selectedSecondaryStorageType" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="HDD">HDD</option>
+                                    <option value="SSD">SSD</option>
+                                </select>
+                            </div>
+
+                            <!-- HDD Options (Secondary) -->
+                            <div class="flex flex-col sm:w-full md:w-1/2"
+                                x-show="selectedSecondaryStorageType === 'HDD'" x-transition>
+                                <label for="secondaryHddStorage" class="mb-2">HDD Options</label>
+                                <select id="secondaryHddStorage" name="secondaryHddStorage"
+                                    x-model="selectedSecondaryHddStorage" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in storageOptions.hdd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- SSD Options (Secondary) -->
+                            <div class="flex flex-col sm:w-full md:w-1/2"
+                                x-show="selectedSecondaryStorageType === 'SSD'" x-transition>
+                                <label for="secondarySsdStorage" class="mb-2">SSD Options</label>
+                                <select id="secondarySsdStorage" name="secondarySsdStorage"
+                                    x-model="selectedSecondarySsdStorage" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in storageOptions.ssd" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- RAM Brand Dropdown -->
+                            <div class="flex flex-col w-full md:w-1/2"
+                                x-show="selectedPrimaryHddStorage || selectedPrimarySsdStorage || selectedSecondaryHddStorage || selectedSecondarySsdStorage"
+                                x-transition>
+                                <label for="ramBrand" class="mb-2">RAM Brand</label>
+                                <select id="ramBrand" x-model="selectedRAMBrand" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <option value="Crucial">Crucial</option>
+                                    <option value="Corsair">Corsair</option>
+                                </select>
+                            </div>
+
+                            <!-- Crucial RAM Options -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedRAMBrand === 'Crucial'"
+                                x-transition>
+                                <label for="crucialRAM" class="mb-2">Crucial Options</label>
+                                <select id="crucialRAM" name="crucialRAM" x-model="selectedRAM" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in ramOptions.crucial" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Corsair RAM Options -->
+                            <div class="flex flex-col w-full md:w-1/2" x-show="selectedRAMBrand === 'Corsair'"
+                                x-transition>
+                                <label for="corsairRAM" class="mb-2">Corsair Options</label>
+                                <select id="corsairRAM" name="corsairRAM" x-model="selectedRAM" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in ramOptions.corsair" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} +₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <!-- Cooler Type Dropdown -->
+                            <div class="flex gap-4 mb-2 w-full">
+                                <div class="flex flex-col w-1/2" x-show="selectedRAM" x-transition>
+                                    <label for="cooler-type" class="mb-2">Cooler Type</label>
+                                    <select id="cooler-type" x-model="selectedCoolerType" @change="updatePrice()"
+                                        class="p-2 border rounded">
+                                        <option value="" selected>Please Select</option>
+                                        <option value="air">Air Cooler</option>
+                                        <option value="liquid">Liquid Cooler</option>
+                                    </select>
+                                </div>
+
+                                <!-- Air Cooler Brand Dropdown -->
+                                <div x-show="selectedCoolerType === 'air'" x-transition class="flex gap-4 w-full">
+                                    <div class="flex flex-col w-1/2" x-show="selectedCoolerType === 'air'" x-transition>
+                                        <label for="air-cooler" class="mb-2">Air Cooler</label>
+                                        <select id="air-cooler" x-model="selectedAirCoolerBrand" @change="updatePrice()"
+                                            class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="arctic">ARCTIC</option>
+                                            <option value="deepcool">Deepcool</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- ARCTIC Air Cooler Options -->
+                                    <div class="flex flex-col w-1/3" x-show="selectedAirCoolerBrand === 'arctic'"
+                                        x-transition>
+                                        <label for="arctic-air-cooler" class="mb-2">ARCTIC Options</label>
+                                        <select id="arctic-air-cooler" x-model="selectedAirCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.air.arctic" :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Deepcool Air Cooler Options -->
+                                    <div class="flex flex-col w-1/3" x-show="selectedAirCoolerBrand === 'deepcool'"
+                                        x-transition>
+                                        <label for="deepcool-air-cooler" class="mb-2">Deepcool Options</label>
+                                        <select id="deepcool-air-cooler" x-model="selectedAirCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.air.deepcool" :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Liquid Cooler Brand Dropdown -->
+                                <div x-show="selectedCoolerType === 'liquid'" x-transition class="flex gap-4 w-full">
+                                    <div class="flex flex-col w-1/2" x-show="selectedCoolerType === 'liquid'"
+                                        x-transition>
+                                        <label for="liquid-cooler" class="mb-2">Liquid Cooler</label>
+                                        <select id="liquid-cooler" x-model="selectedLiquidCoolerBrand"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <option value="arctic">ARCTIC</option>
+                                            <option value="asus">Asus</option>
+                                            <option value="coolermaster">Coolermaster</option>
+                                            <option value="deepcool">Deepcool</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- ARCTIC Liquid Cooler Options -->
+                                    <div class="flex flex-col w-1/3" x-show="selectedLiquidCoolerBrand === 'arctic'"
+                                        x-transition>
+                                        <label for="arctic-liquid-cooler" class="mb-2">ARCTIC Options</label>
+                                        <select id="arctic-liquid-cooler" x-model="selectedLiquidCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.liquid.arctic" :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Asus Liquid Cooler Options -->
+                                    <div class="flex flex-col w-1/3" x-show="selectedLiquidCoolerBrand === 'asus'"
+                                        x-transition>
+                                        <label for="asus-liquid-cooler" class="mb-2">Asus Options</label>
+                                        <select id="asus-liquid-cooler" x-model="selectedLiquidCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.liquid.asus" :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Coolermaster Liquid Cooler Options -->
+                                    <div class="flex flex-col w-1/3"
+                                        x-show="selectedLiquidCoolerBrand === 'coolermaster'" x-transition>
+                                        <label for="coolermaster-liquid-cooler" class="mb-2">Coolermaster
+                                            Options</label>
+                                        <select id="coolermaster-liquid-cooler" x-model="selectedLiquidCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.liquid.coolermaster"
+                                                :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <!-- Deepcool Liquid Cooler Options -->
+                                    <div class="flex flex-col w-1/3" x-show="selectedLiquidCoolerBrand === 'deepcool'"
+                                        x-transition>
+                                        <label for="deepcool-liquid-cooler" class="mb-2">Deepcool Options</label>
+                                        <select id="deepcool-liquid-cooler" x-model="selectedLiquidCooler"
+                                            @change="updatePrice()" class="p-2 border rounded">
+                                            <option value="" selected>Please Select</option>
+                                            <template x-for="option in coolerOptions.liquid.deepcool"
+                                                :key="option.value">
+                                                <option :value="option.value"
+                                                    x-text="`${option.label} +₹${option.price.toLocaleString()}`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-4 mb-4">
+                            <!-- WiFi Adapter Dropdown -->
+                            <div class="flex flex-col w-full" x-show="selectedAirCooler || selectedLiquidCooler"
+                                x-transition>
+                                <label for="wifi" class="mb-2">WiFi Adapter</label>
+                                <select id="wifi" x-model="selectedWiFi" @change="updatePrice()"
+                                    class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in wifiOptions" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} - ₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <!-- Operating System Dropdown -->
+                            <div class="flex flex-col w-full" x-show="selectedWiFi" x-transition>
+                                <label for="os" class="mb-2">Operating System</label>
+                                <select id="os" x-model="selectedOS" @change="updatePrice()" class="p-2 border rounded">
+                                    <option value="" selected>Please Select</option>
+                                    <template x-for="option in osOptions" :key="option.value">
+                                        <option :value="option.value"
+                                            x-text="`${option.label} - ₹${option.price.toLocaleString()}`"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- Third Section (10% height) with "Add to Cart" Button -->
+                <div class="h-[10%] p-4 bg-white rounded shadow-md flex justify-center items-center">
+                    <button :disabled="!isFormComplete" @click="addToCart()"
+                        class="bg-blue-500 text-white px-6 py-2 rounded disabled:bg-gray-400 transition">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Message for Add to Cart -->
+        <div x-show="showMessage" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded shadow-lg">
+                <p class="text-xl text-green-500">Item added to the cart successfully!</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
